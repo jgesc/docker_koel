@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  koel:
+    image: koel
+    depends_on:
+      - mysql
+    ports:
+      - 443:443
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_DATABASE: koel
+      MEDIA_PATH: /music
+      APP_ENV: production
+    volumes:
+      - ./persist/ssl:/etc/apache2/ssl
+      - ./persist/music:/music
+      - ./persist/covers:/var/www/html/public/img/covers
+    env_file:
+      - config/koel-config.env
+
+  mysql:
+    image: mysql/mysql-server:5.7
+    volumes:
+      - ./persist/db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: koel
+    env_file:
+      - config/mysql-config.env
