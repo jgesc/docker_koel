@@ -1,4 +1,3 @@
-# docker_koel
 Docker image for [koel](https://github.com/phanan/koel)
  
 # Introduction
