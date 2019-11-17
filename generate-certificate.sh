@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [!-d ./persist]; then
-    mkdir ./persist;
+if [ ! -d ./persist ]; then
+	mkdir ./persist;
 	mkdir ./persist/ssl;
 	mkdir ./persist/ssl/private;
 	mkdir ./persist/ssl/certs;
