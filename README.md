@@ -1,4 +1,4 @@
-Docker image for [koel](https://github.com/phanan/koel)
+Docker image for [koel](https://github.com/phanan/koel) **v4.1.1**
  
 # Introduction
 Koel is a web-based open source personal audio streaming service.
@@ -13,6 +13,8 @@ Requires docker-compose.
 
 # Notes
 * Music is stored in `./persist/music`.
+* When updating, running `init.sh` is not required.
+* Remember to change credentials and JWT secret in `./config`.
 
 # TO-DO
 * Clean up

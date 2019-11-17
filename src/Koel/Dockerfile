@@ -29,7 +29,7 @@ RUN docker-php-ext-install \
 	zip mbstring curl xml exif pdo pdo_mysql
 
 # Download and install koel
-RUN git clone https://github.com/phanan/koel.git -b v4.0.0 --recursive /var/www/html
+RUN git clone https://github.com/phanan/koel.git -b v4.1.1 --recursive /var/www/html
 WORKDIR /var/www/html
 RUN composer install
 WORKDIR /var/www/html/resources/assets
