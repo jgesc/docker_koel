@@ -7,7 +7,7 @@ Requires docker-compose.
 
 # Installation
 1. Run `build-all.sh` to build the images.
-2. Run `create-certificate.sh` to generate a self-signed certificate. Alternatively, you can use your own certificate.
+2. Run `generate-certificate.sh` to generate a self-signed certificate. Alternatively, you can use your own certificate.
 3. Run `run.sh` and wait for MySQL to initialize.
 4. Run `init.sh` to initialize koel. Use the default value (/music) when asked for the music repository.
 
