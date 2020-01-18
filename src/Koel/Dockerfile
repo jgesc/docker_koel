@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
 	gnupg2 \
 	apt-transport-https \
 	git && \
-	curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+	curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
 	apt-get update && \
@@ -29,7 +29,7 @@ RUN docker-php-ext-install \
 	zip mbstring curl xml exif pdo pdo_mysql
 
 # Download and install koel
-RUN git clone https://github.com/phanan/koel.git -b v4.1.1 --recursive /var/www/html
+RUN git clone https://github.com/phanan/koel.git -b v4.2.2 --recursive /var/www/html
 WORKDIR /var/www/html
 RUN composer install
 WORKDIR /var/www/html/resources/assets
