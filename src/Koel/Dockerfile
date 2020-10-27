@@ -1,4 +1,4 @@
-FROM php:7.3.0-apache
+FROM php:7.3.23-apache
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get install -y \
@@ -29,7 +29,7 @@ RUN docker-php-ext-install \
 	zip mbstring curl xml exif pdo pdo_mysql
 
 # Download and install koel
-RUN git clone https://github.com/phanan/koel.git -b v4.2.2 --recursive /var/www/html
+RUN git clone https://github.com/koel/koel.git -b v4.4.0 --recursive /var/www/html
 WORKDIR /var/www/html
 RUN composer install
 WORKDIR /var/www/html/resources/assets

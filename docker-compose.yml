@@ -1,8 +1,8 @@
-version: '3.4'
+version: '3.7'
 
 services:
   koel:
-    image: koel
+    image: koel:latest
     depends_on:
       - mysql
     ports:
