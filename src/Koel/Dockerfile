@@ -22,24 +22,46 @@ RUN curl -sS https://getcomposer.org/installer \
 
 # Install apt libraries
 RUN apt-get install -y \
-	libxml2-dev zlib1g-dev libcurl4-openssl-dev libc6-dev libpng-dev faad ffmpeg libzip-dev
+	libxml2-dev zlib1g-dev libcurl4-openssl-dev libc6-dev libpng-dev faad \
+	ffmpeg libzip-dev libjpeg62-turbo-dev zip libfreetype6-dev libapache2-mod-xsendfile
+RUN apt-get clean
 
 # Install php libraries
-RUN docker-php-ext-install \
-	zip mbstring curl xml exif pdo pdo_mysql
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-install -j$(nproc) \
+	zip mbstring curl xml exif pdo pdo_mysql gd
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b v4.4.0 --recursive /var/www/html
+RUN git clone https://github.com/koel/koel.git -b v4.4.0 --recurse-submodules --single-branch --depth 1 /var/www/html && \
+  cd /var/www/html && \
+  rm -rf .editorconfig \
+    .eslintignore \
+    .git \
+    .gitattributes \
+    .github \
+    .gitignore \
+    .gitmodules \
+    .gitpod.dockerfile \
+    .gitpod.yml \
+    .travis.yml \
+    cypress \
+    cypress.json \
+    nitpick.json \
+    phpunit.xml \
+    resources/artifacts \
+    tests
+
 WORKDIR /var/www/html
-RUN composer install
+RUN composer install --no-dev --optimize-autoloader
 WORKDIR /var/www/html/resources/assets
-RUN yarn install
+RUN yarn install --non-interactive
 WORKDIR /var/www/html
-RUN yarn install
+RUN CYPRESS_INSTALL_BINARY=0 yarn install --non-interactive
 RUN yarn production
 
-# Remove default configuration file
+# Remove default configuration file and more cleanup
 RUN rm /var/www/html/.env
+RUN rm -rf /var/www/html/node_modules /var/www/html/resources/assets
 
 # Koel makes use of Larvel's pretty URLs. This requires some additional
 # configuration: https://laravel.com/docs/4.2#pretty-urls
