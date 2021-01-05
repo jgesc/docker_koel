@@ -1,4 +1,4 @@
-FROM php:7.3.23-apache
+FROM php:7.3.25-apache
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get install -y \
@@ -24,6 +24,7 @@ RUN curl -sS https://getcomposer.org/installer \
 RUN apt-get install -y \
 	libxml2-dev zlib1g-dev libcurl4-openssl-dev libc6-dev libpng-dev faad \
 	ffmpeg libzip-dev libjpeg62-turbo-dev zip libfreetype6-dev libapache2-mod-xsendfile
+
 RUN apt-get clean
 
 # Install php libraries
@@ -32,7 +33,7 @@ RUN docker-php-ext-install -j$(nproc) \
 	zip mbstring curl xml exif pdo pdo_mysql gd
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b v4.4.0 --recurse-submodules --single-branch --depth 1 /var/www/html && \
+RUN git clone https://github.com/koel/koel.git -b master --recurse-submodules --single-branch --depth 1 /var/www/html && \
   cd /var/www/html && \
   rm -rf .editorconfig \
     .eslintignore \
@@ -57,7 +58,7 @@ WORKDIR /var/www/html/resources/assets
 RUN yarn install --non-interactive
 WORKDIR /var/www/html
 RUN CYPRESS_INSTALL_BINARY=0 yarn install --non-interactive
-RUN yarn production
+RUN yarn build
 
 # Remove default configuration file and more cleanup
 RUN rm /var/www/html/.env
@@ -66,6 +67,7 @@ RUN rm -rf /var/www/html/node_modules /var/www/html/resources/assets
 # Koel makes use of Larvel's pretty URLs. This requires some additional
 # configuration: https://laravel.com/docs/4.2#pretty-urls
 COPY ./.htaccess /var/www/html
+COPY ./.htaccess /var/www/html/public
 
 # Fix permissions.
 RUN chown -R www-data:www-data /var/www/html
@@ -77,8 +79,8 @@ RUN a2enmod ssl && \
     a2ensite koel-ssl && \
 	a2dissite 000-default
 
-# Copy custom init command
-COPY InitCommand.php /var/www/html/app/Console/Commands/
+# Copy custom init command (no longer needed with --no-assets)
+#COPY InitCommand.php /var/www/html/app/Console/Commands/
 
 # Setup bootstrap script.
 COPY koel-entrypoint /usr/local/bin/

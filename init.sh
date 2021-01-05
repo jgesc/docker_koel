@@ -1,1 +1,1 @@
-docker-compose exec koel php artisan koel:init
+docker-compose exec koel php artisan koel:init --no-assets
