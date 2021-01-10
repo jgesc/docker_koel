@@ -1,4 +1,4 @@
-FROM php:7.3.25-apache
+FROM php:7.3.26-apache
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get install -y \
@@ -16,7 +16,7 @@ RUN curl -sS https://getcomposer.org/installer \
     | php -- \
           --install-dir=/usr/local/bin \
           --filename=composer \
-          --version=1.9.0 && \
+          --version=2.0.8 && \
 	chmod +x /usr/local/bin/composer && \
 	composer --version
 
@@ -30,10 +30,10 @@ RUN apt-get clean
 # Install php libraries
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 RUN docker-php-ext-install -j$(nproc) \
-	zip mbstring curl xml exif pdo pdo_mysql gd
+	zip mbstring curl xml exif pdo pdo_mysql gd bcmath
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b master --recurse-submodules --single-branch --depth 1 /var/www/html && \
+RUN git clone https://github.com/koel/koel.git -b v5.0.0 --recurse-submodules --single-branch --depth 1 /var/www/html && \
   cd /var/www/html && \
   rm -rf .editorconfig \
     .eslintignore \
