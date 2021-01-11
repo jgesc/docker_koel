@@ -33,7 +33,7 @@ RUN docker-php-ext-install -j$(nproc) \
 	zip mbstring curl xml exif pdo pdo_mysql gd bcmath
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b v5.0.0 --recurse-submodules --single-branch --depth 1 /var/www/html && \
+RUN git clone https://github.com/koel/koel.git -b v5.0.2 --recurse-submodules --single-branch --depth 1 /var/www/html && \
   cd /var/www/html && \
   rm -rf .editorconfig \
     .eslintignore \
@@ -66,7 +66,6 @@ RUN rm -rf /var/www/html/node_modules /var/www/html/resources/assets
 
 # Koel makes use of Larvel's pretty URLs. This requires some additional
 # configuration: https://laravel.com/docs/4.2#pretty-urls
-COPY ./.htaccess /var/www/html
 COPY ./.htaccess /var/www/html/public
 
 # Fix permissions.
