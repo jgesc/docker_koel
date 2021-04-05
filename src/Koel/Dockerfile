@@ -1,7 +1,7 @@
 FROM php:7.3.26-apache
 
 # Install NodeJS, Yarn
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
 	gnupg2 \
 	apt-transport-https \
 	git && \
