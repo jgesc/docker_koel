@@ -1,11 +1,11 @@
-FROM php:7.3.27-apache
+FROM php:7.3.28-apache
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
 	gnupg2 \
 	apt-transport-https \
 	git && \
-	curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+	curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
 	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
 	apt-get update && \
@@ -16,7 +16,7 @@ RUN curl -sS https://getcomposer.org/installer \
     | php -- \
           --install-dir=/usr/local/bin \
           --filename=composer \
-          --version=2.0.8 && \
+          --version=2.0.13 && \
 	chmod +x /usr/local/bin/composer && \
 	composer --version
 
@@ -33,7 +33,7 @@ RUN docker-php-ext-install -j$(nproc) \
 	zip mbstring curl xml exif pdo pdo_mysql gd bcmath
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b v5.1.1 --recurse-submodules --single-branch --depth 1 /var/www/html && \
+RUN git clone https://github.com/koel/koel.git -b "v5.1.3" --recurse-submodules --single-branch --depth 1 /var/www/html && \
   cd /var/www/html && \
   rm -rf .editorconfig \
     .eslintignore \
@@ -76,7 +76,7 @@ RUN a2enmod rewrite
 COPY koel-ssl.conf /etc/apache2/sites-available
 RUN a2enmod ssl && \
     a2ensite koel-ssl && \
-	a2dissite 000-default
+    a2dissite 000-default
 
 # Copy custom init command (no longer needed with --no-assets)
 #COPY InitCommand.php /var/www/html/app/Console/Commands/
