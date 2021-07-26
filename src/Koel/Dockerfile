@@ -1,4 +1,4 @@
-FROM php:7.3.28-apache
+FROM php:7.4.21-apache
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
@@ -16,24 +16,25 @@ RUN curl -sS https://getcomposer.org/installer \
     | php -- \
           --install-dir=/usr/local/bin \
           --filename=composer \
-          --version=2.0.13 && \
+          --version=2.1.5 && \
 	chmod +x /usr/local/bin/composer && \
 	composer --version
 
 # Install apt libraries
 RUN apt-get install -y \
 	libxml2-dev zlib1g-dev libcurl4-openssl-dev libc6-dev libpng-dev faad sudo \
-	ffmpeg libzip-dev libjpeg62-turbo-dev zip libfreetype6-dev libapache2-mod-xsendfile
+	ffmpeg libzip-dev libjpeg62-turbo-dev zip libfreetype6-dev libapache2-mod-xsendfile \
+	libonig-dev
 
 RUN apt-get clean
 
 # Install php libraries
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
 RUN docker-php-ext-install -j$(nproc) \
 	zip mbstring curl xml exif pdo pdo_mysql gd bcmath
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b "v5.1.4" --recurse-submodules --single-branch --depth 1 /var/www/html && \
+RUN git clone https://github.com/koel/koel.git -b "v5.1.5" --recurse-submodules --single-branch --depth 1 /var/www/html && \
   cd /var/www/html && \
   rm -rf .editorconfig \
     .eslintignore \
