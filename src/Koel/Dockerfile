@@ -24,7 +24,7 @@ RUN curl -sS https://getcomposer.org/installer \
 RUN apt-get install -y \
 	libxml2-dev zlib1g-dev libcurl4-openssl-dev libc6-dev libpng-dev faad sudo \
 	ffmpeg libzip-dev libjpeg62-turbo-dev zip libfreetype6-dev libapache2-mod-xsendfile \
-	libonig-dev
+	libonig-dev python2-minimal
 
 RUN apt-get clean
 
