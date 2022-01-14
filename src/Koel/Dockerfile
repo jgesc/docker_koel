@@ -1,4 +1,4 @@
-FROM php:7.4.27-apache
+FROM php:7.4.27-apache-buster
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
