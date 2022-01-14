@@ -1,4 +1,4 @@
-FROM php:7.4.27-apache-buster
+FROM php:7.4.27-apache-bullseye
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
@@ -24,14 +24,14 @@ RUN curl -sS https://getcomposer.org/installer \
 RUN apt-get install -y \
 	libxml2-dev zlib1g-dev libcurl4-openssl-dev libc6-dev libpng-dev faad sudo \
 	ffmpeg libzip-dev libjpeg62-turbo-dev zip libfreetype6-dev libapache2-mod-xsendfile \
-	libonig-dev python2-minimal
+	locales libonig-dev libpq-dev python2-minimal
 
 RUN apt-get clean
 
 # Install php libraries
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
 RUN docker-php-ext-install -j$(nproc) \
-	zip mbstring curl xml exif pdo pdo_mysql gd bcmath
+	zip mbstring curl xml exif pdo pdo_mysql pdo_pgsql pgsql gd bcmath
 
 # Download and install koel
 RUN git clone https://github.com/koel/koel.git -b "v5.1.12" --recurse-submodules --single-branch --depth 1 /var/www/html && \
@@ -65,12 +65,24 @@ RUN yarn build
 RUN rm /var/www/html/.env
 RUN rm -rf /var/www/html/node_modules /var/www/html/resources/assets
 
+ENV FFMPEG_PATH=/usr/bin/ffmpeg \
+    MEDIA_PATH=/music \
+    STREAMING_METHOD=x-sendfile \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
 # Koel makes use of Larvel's pretty URLs. This requires some additional
 # configuration: https://laravel.com/docs/4.2#pretty-urls
 COPY ./.htaccess /var/www/html/public
 
 # Fix permissions.
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html \
+  # Set locale to prevent removal of non-ASCII path characters when transcoding with ffmpeg
+  # See https://github.com/koel/docker/pull/91
+  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+  && /usr/sbin/locale-gen
+
 RUN a2enmod rewrite
 
 # Enable HTTPS
