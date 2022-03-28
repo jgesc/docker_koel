@@ -1,4 +1,4 @@
-FROM php:7.4.27-apache-bullseye
+FROM php:7.4.28-apache-bullseye
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
