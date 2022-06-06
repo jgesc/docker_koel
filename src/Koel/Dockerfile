@@ -16,7 +16,7 @@ RUN curl -sS https://getcomposer.org/installer \
     | php -- \
           --install-dir=/usr/local/bin \
           --filename=composer \
-          --version=2.2.3 && \
+          --version=2.3.4 && \
 	chmod +x /usr/local/bin/composer && \
 	composer --version
 
@@ -34,7 +34,7 @@ RUN docker-php-ext-install -j$(nproc) \
 	zip mbstring curl xml exif pdo pdo_mysql pdo_pgsql pgsql gd bcmath
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b "v5.1.13" --recurse-submodules --single-branch --depth 1 /var/www/html && \
+RUN git clone https://github.com/koel/koel.git -b "v5.1.14" --recurse-submodules --single-branch --depth 1 /var/www/html && \
   cd /var/www/html && \
   rm -rf .editorconfig \
     .eslintignore \
