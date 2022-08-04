@@ -1,4 +1,4 @@
-FROM php:7.4.27-apache-bullseye
+FROM php:8.1.8-apache-bullseye
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
@@ -16,7 +16,7 @@ RUN curl -sS https://getcomposer.org/installer \
     | php -- \
           --install-dir=/usr/local/bin \
           --filename=composer \
-          --version=2.2.3 && \
+          --version=2.3.10 && \
 	chmod +x /usr/local/bin/composer && \
 	composer --version
 
@@ -24,7 +24,7 @@ RUN curl -sS https://getcomposer.org/installer \
 RUN apt-get install -y \
 	libxml2-dev zlib1g-dev libcurl4-openssl-dev libc6-dev libpng-dev faad sudo \
 	ffmpeg libzip-dev libjpeg62-turbo-dev zip libfreetype6-dev libapache2-mod-xsendfile \
-	locales libonig-dev libpq-dev python2-minimal
+	locales libonig-dev libpq-dev python2-minimal libvorbis-dev
 
 RUN apt-get clean
 
@@ -34,10 +34,11 @@ RUN docker-php-ext-install -j$(nproc) \
 	zip mbstring curl xml exif pdo pdo_mysql pdo_pgsql pgsql gd bcmath
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b "v5.1.13" --recurse-submodules --single-branch --depth 1 /var/www/html && \
+RUN git clone https://github.com/koel/koel.git -b "v6.0.2" --recurse-submodules --single-branch --depth 1 /var/www/html && \
   cd /var/www/html && \
   rm -rf .editorconfig \
     .eslintignore \
+    .eslintrc \
     .git \
     .gitattributes \
     .github \
@@ -49,8 +50,6 @@ RUN git clone https://github.com/koel/koel.git -b "v5.1.13" --recurse-submodules
     cypress \
     cypress.json \
     nitpick.json \
-    phpunit.xml \
-    resources/artifacts \
     tests
 
 WORKDIR /var/www/html
@@ -62,8 +61,18 @@ RUN CYPRESS_INSTALL_BINARY=0 yarn install --non-interactive
 RUN yarn build
 
 # Remove default configuration file and more cleanup
-RUN rm /var/www/html/.env
-RUN rm -rf /var/www/html/node_modules /var/www/html/resources/assets
+RUN rm -rf .env \
+    api-docs \
+    package.json \
+    phpstan.neon.dist \
+    phpunit.xml \
+    phpunit.xml.dist \
+    node_modules \
+    resources/artifacts \
+    ruleset.xml \
+    scripts/ \
+    tag.sh \
+    vite.config.js
 
 ENV FFMPEG_PATH=/usr/bin/ffmpeg \
     MEDIA_PATH=/music \
