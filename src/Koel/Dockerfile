@@ -1,4 +1,4 @@
-FROM php:8.1.11-apache-bullseye
+FROM php:8.1.12-apache-bullseye
 
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
@@ -16,7 +16,7 @@ RUN curl -sS https://getcomposer.org/installer \
     | php -- \
           --install-dir=/usr/local/bin \
           --filename=composer \
-          --version=2.4.2 && \
+          --version=2.4.4 && \
 	chmod +x /usr/local/bin/composer && \
 	composer --version
 
@@ -34,7 +34,7 @@ RUN docker-php-ext-install -j$(nproc) \
 	zip mbstring curl xml exif pdo pdo_mysql pdo_pgsql pgsql gd bcmath
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b "v6.5.3" --recurse-submodules --single-branch --depth 1 /var/www/html && \
+RUN git clone https://github.com/koel/koel.git -b "v6.6.0" --recurse-submodules --single-branch --depth 1 /var/www/html && \
   cd /var/www/html && \
   rm -rf .editorconfig \
     .eslintignore \
