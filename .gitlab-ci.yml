@@ -23,8 +23,7 @@ deploy-images:
         fi
 
         export TAGS="$TAGS $(grep 'ARG KOEL_VERSION' src/Koel/Dockerfile | awk -F'=' '{print $NF}')"
-        export DOCKER_USER=$REGISTRY_USER
-        export DOCKER_PASSWORD=$(echo -n $REGISTRY_PASSWORD_BASE64 | base64 -d)
+        export DOCKER_PASSWORD=$(echo -n $DOCKER_PASSWORD_BASE64 | base64 -d)
 
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin $REGISTRY
         cd $DOCKERPATH
