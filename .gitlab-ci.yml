@@ -25,7 +25,7 @@ deploy-images:
         export TAGS="$TAGS $(grep 'ARG KOEL_VERSION' src/Koel/Dockerfile | awk -F'=' '{print $NF}')"
         export REGISTRY_PASSWORD=$(echo -n $REGISTRY_PASSWORD_BASE64 | base64 -d)
 
-        docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $REGISTRY
+        echo -n "$REGISTRY_PASSWORD" | docker login -u $REGISTRY_USER --password-stdin $REGISTRY_PASSWORD $REGISTRY
         cd $DOCKERPATH
         TARGET=$(echo ${CNAME} | sed 's/\//-/g')
         docker build --network=host -t $REGISTRY/$CNAME:_build --target $TARGET -f $DOCKERFILE .
