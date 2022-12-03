@@ -1,0 +1,36 @@
+stages:
+    - deploy-images
+
+deploy-images:
+    image: docker:dind
+    stage: deploy-images
+    variables:
+      DOCKERPATH: src/Koel
+      DOCKERFILE: Dockerfile
+      REGISTRY: registry.thejohnsons.site/jgesc
+      CNAME: koel
+    script:
+      - |
+        export TAGS="git-commit-$CI_COMMIT_SHORT_SHA"
+        if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then
+          export TAGS="$TAGS latest"
+        fi
+        if [[ ! -z "$CI_COMMIT_REF_NAME" ]]; then
+          export TAGS="$TAGS $CI_COMMIT_REF_NAME"
+        fi
+        if [[ -n "$CI_COMMIT_TAG" ]]; then
+          export TAGS="$TAGS $CI_COMMIT_TAG"
+        fi
+
+        export TAGS="$TAGS $(grep 'ARG KOEL_VERSION' src/Koel/Dockerfile | awk -F'=' '{print $NF}')"
+        export REGISTRY_PASSWORD=$(echo -n $REGISTRY_PASSWORD_BASE64 | base64 -d)
+
+        docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $REGISTRY
+        cd $DOCKERPATH
+        TARGET=$(echo ${CNAME} | sed 's/\//-/g')
+        docker build --network=host -t $REGISTRY/$CNAME:_build --target $TARGET -f $DOCKERFILE .
+        for TAG in $TAGS; do
+          echo "Tagging and pushing image \"$CNAME\" with \"$TAG\""
+          docker tag $REGISTRY/$CNAME:_build $REGISTRY/$CNAME:$TAG
+          docker push $REGISTRY/$CNAME:$TAG
+        done

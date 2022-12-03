@@ -1,5 +1,7 @@
 FROM php:8.1.13-apache-bullseye
 
+ARG KOEL_VERSION=v6.8.2
+
 # Install NodeJS, Yarn
 RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
 	gnupg2 \
@@ -34,7 +36,7 @@ RUN docker-php-ext-install -j$(nproc) \
 	zip mbstring curl xml exif pdo pdo_mysql pdo_pgsql pgsql gd bcmath
 
 # Download and install koel
-RUN git clone https://github.com/koel/koel.git -b "v6.8.2" --recurse-submodules --single-branch --depth 1 /var/www/html && \
+RUN git clone https://github.com/koel/koel.git -b "${KOEL_VERSION}" --recurse-submodules --single-branch --depth 1 /var/www/html && \
   cd /var/www/html && \
   rm -rf .editorconfig \
     .eslintignore \
