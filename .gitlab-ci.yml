@@ -26,7 +26,7 @@ deploy-images:
         export DOCKER_USER=$REGISTRY_USER
         export DOCKER_PASSWORD=$(echo -n $REGISTRY_PASSWORD_BASE64 | base64 -d)
 
-        docker login $REGISTRY
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin $REGISTRY
         cd $DOCKERPATH
         TARGET=$(echo ${CNAME} | sed 's/\//-/g')
         docker build --network=host -t $REGISTRY/$CNAME:_build --target $TARGET -f $DOCKERFILE .
