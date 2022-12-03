@@ -33,3 +33,4 @@ deploy-images:
           docker tag $REGISTRY/$CNAME:_build $REGISTRY/$CNAME:$TAG
           docker push $REGISTRY/$CNAME:$TAG
         done
+
