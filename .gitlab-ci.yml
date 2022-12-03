@@ -27,8 +27,7 @@ deploy-images:
 
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin $REGISTRY
         cd $DOCKERPATH
-        TARGET=$(echo ${CNAME} | sed 's/\//-/g')
-        docker build --network=host -t $REGISTRY/$CNAME:_build --target $TARGET -f $DOCKERFILE .
+        docker build --network=host -t $REGISTRY/$CNAME:_build -f $DOCKERFILE .
         for TAG in $TAGS; do
           echo "Tagging and pushing image \"$CNAME\" with \"$TAG\""
           docker tag $REGISTRY/$CNAME:_build $REGISTRY/$CNAME:$TAG
